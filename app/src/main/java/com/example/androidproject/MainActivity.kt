@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {AnNamStudyRoomApp()}
+        setContent {MenuScreen()}
     }
 }
 
@@ -44,17 +44,17 @@ fun AnNamStudyRoomApp() {
             NavHost(navController = nav, startDestination = "menu") {
                 composable("menu") {
                     MenuScreen(
-                        onAddCard = { nav.navigate("add") },
-                        onStudy = { /* later */ },
-                        onSearch = { /* later */ }
+//                        onAddCard = { /*nav.navigate("add")*/ },
+//                        onStudy = { /* later */ },
+//                        onSearch = { /* later */ }
                     )
                 }
-                composable("add") {
-                    AddCardScreen(
-                        onBack = { nav.popBackStack() },
-                        onSave = { /* front-end only; maybe show a snackbar later */ }
-                    )
-                }
+//                composable("add") {
+//                    AddCardScreen(
+//                        onBack = { nav.popBackStack() },
+//                        onSave = { /* front-end only; maybe show a snackbar later */ }
+//                    )
+//                }
             }
         }
     }
