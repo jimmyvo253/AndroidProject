@@ -25,10 +25,7 @@ fun MenuScreen(
             .background(Color.LightGray),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        Column {
             Button(onClick = {}, modifier = Modifier.width(220.dp )) {
                 Text("Study Cards")
             }
