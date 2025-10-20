@@ -1,38 +1,34 @@
 package com.example.androidproject.ui.menu
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun MenuScreen(
-//    onAddCard: () -> Unit,
-//    onStudy: () -> Unit,
-//    onSearch: () -> Unit
+fun MenuScreen(navController: NavController
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-//            .padding(120.dp)
-            .background(Color.LightGray),
-        contentAlignment = Alignment.Center
+            .padding(120.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Column {
-            Button(onClick = {}, modifier = Modifier.width(220.dp )) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Button(onClick = { navController.navigate("study")}, modifier = Modifier.width(220.dp)) {
+
                 Text("Study Cards")
             }
-            Button(onClick = {}, modifier = Modifier.width(220.dp)) {
+            Button(onClick = { navController.navigate("add")}, modifier = Modifier.width(220.dp)) {
                 Text("Add Card")
             }
-            Button(onClick = {}, modifier = Modifier.width(220.dp)) {
+            Button(onClick = { navController.navigate("search")}, modifier = Modifier.width(220.dp)) {
                 Text("Search Card")
             }
         }
