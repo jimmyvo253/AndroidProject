@@ -6,12 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun MenuScreen(
-    onAddCard: () -> Unit,
-    onStudy: () -> Unit,
-    onSearch: () -> Unit
+fun MenuScreen(navController: NavController
 ) {
     Box(
         modifier = Modifier
@@ -23,13 +21,13 @@ fun MenuScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Button(onClick = onStudy, modifier = Modifier.width(220.dp)) {
+            Button(onClick = { navController.navigate("study")}, modifier = Modifier.width(220.dp)) {
                 Text("Study Cards")
             }
-            Button(onClick = onAddCard, modifier = Modifier.width(220.dp)) {
+            Button(onClick = { navController.navigate("add")}, modifier = Modifier.width(220.dp)) {
                 Text("Add Card")
             }
-            Button(onClick = onSearch, modifier = Modifier.width(220.dp)) {
+            Button(onClick = { navController.navigate("search")}, modifier = Modifier.width(220.dp)) {
                 Text("Search Card")
             }
         }
