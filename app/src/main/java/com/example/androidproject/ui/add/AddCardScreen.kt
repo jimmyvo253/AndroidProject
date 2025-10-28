@@ -1,18 +1,122 @@
-//package com.example.androidproject.ui.add
-//
-//import androidx.compose.foundation.layout.*
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.material3.Button
-//import androidx.compose.material3.OutlinedTextField
-//import androidx.compose.material3.RadioButton
-//import androidx.compose.material3.Text
-//import androidx.compose.material3.TextButton
-//import androidx.compose.runtime.*
-//import androidx.compose.runtime.saveable.rememberSaveable
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.unit.dp
-//import androidx.navigation.NavController
+package com.example.androidproject.ui.add
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddCardScreen(navController: NavController) {
+    var clickOnAdd by remember { mutableStateOf(false) }
+    //var enWord = ""
+    //var vnWord = ""
+    var enWord by remember { mutableStateOf("") }
+    var vnWord by remember { mutableStateOf("") }
+    //var enWord by rememberSaveable { mutableStateOf("") }
+    //var vnWord by rememberSaveable { mutableStateOf("") }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Search Cards") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.Black   // or MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            TextField(
+                value = enWord,
+                onValueChange = { enWord = it },
+                modifier = Modifier.semantics { contentDescription = "English String" },
+                label = { Text("en") }
+            )
+            TextField(
+                value = vnWord,
+                onValueChange = { vnWord = it },
+                label = { Text("vn") }
+            )
+
+            if (clickOnAdd) {
+                Text("Adding card [$enWord, $vnWord] ...")
+            }
+            //ClickCounter(
+            //    clicks = num,
+            //    onClick = {num = num + 1}
+            //)
+            Button(onClick = {
+                clickOnAdd = true
+            })
+            {
+                Text("Add")
+            }
+        }
+    }
+
+}
+//@Composable
+//fun ClickCounter(clicks: Int, onClick: () -> Unit) {
+//    Button(onClick = onClick) {
+//        Text("I've been clicked $clicks times")
+//    }
+//}
+//}
+//@Composable
+//fun AddCardScreen(navController: NavController) {
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//                title = { Text("Add a Card") },
+//                navigationIcon = {
+//                    IconButton(onClick = { navController.navigateUp() }) {
+//                        Text("Back")
+//                    }
+//                }
+//            )
+//        }
+//    ) { padding ->
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(padding),
+//            contentAlignment = Alignment.Center
+//        ) { }
+//    }
+//}
 //
 //@Composable
 //fun AddCardScreen(navController: NavController

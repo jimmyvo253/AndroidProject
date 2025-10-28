@@ -4,14 +4,14 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.ext.junit.runners.AndroidJUnit4
-
-import org.junit.Test
-import org.junit.runner.RunWith
-
-import org.junit.Assert.*
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.testing.TestNavHostController
+import androidx.test.core.app.ApplicationProvider
+import com.example.androidproject.navigation.Navigator
+import com.example.androidproject.ui.theme.AndroidProjectTheme
+import org.junit.Assert.assertEquals
 import org.junit.Rule
+import org.junit.Test
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -28,12 +28,38 @@ class MyComposeTest {
     @Test
     fun myTest() {
         // Start the app
+        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+        navController.navigatorProvider.addNavigator(ComposeNavigator())
         composeTestRule.setContent {
-//            MyAppTheme {
-            MyApp() //cai nay lay dai dai, hok hiu thay noi zi
+            AndroidProjectTheme {
+            Navigator(navController)
             }
-//        }
+        }
+        assertEquals("menu", navController.currentDestination?.route)
 
-        composeTestRule.onNodeWithText("Continue").assertIsDisplayed()
+    }
+    @Test
+    fun menuHasAddButtonTest () {
+        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+        navController.navigatorProvider.addNavigator(ComposeNavigator())
+        composeTestRule.setContent {
+            AndroidProjectTheme {
+                Navigator(navController)
+            }
+        }
+        composeTestRule.onNodeWithText("Add a Card").assertIsDisplayed()
+    }
+    @Test
+    fun clickonAddCard (){
+        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+        navController.navigatorProvider.addNavigator(ComposeNavigator())
+        composeTestRule.setContent {
+            AndroidProjectTheme {
+                Navigator(navController)
+            }
+        }
+        composeTestRule.onNodeWithText("Add a Card").performClick()
+        composeTestRule
     }
 }
+
