@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Android Project</string>
+    <string name="app_name">HomeScreen</string>
+    <string name="English_Label">English</string>
+    <string name="Vietnamese_Label">Vietnamese</string>
 </resources>
