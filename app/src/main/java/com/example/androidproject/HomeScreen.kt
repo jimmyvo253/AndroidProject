@@ -1,4 +1,4 @@
-package com.example.androidproject.ui.menu
+package com.example.androidproject
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

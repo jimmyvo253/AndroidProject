@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 // Pass DAO into Navigator
                 Navigator(
-                    navController = navController,
+                    navController,
                     flashCardDao = db.flashCardDao()
                 )
             }

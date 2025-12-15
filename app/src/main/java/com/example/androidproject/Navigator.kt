@@ -1,4 +1,3 @@
-
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -30,12 +29,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.androidproject.data.local.FlashCard
 import com.example.androidproject.data.local.FlashCardDao
-import com.example.androidproject.ui.add.AddCardScreen
-import com.example.androidproject.ui.menu.HomeScreen
-import com.example.androidproject.ui.search.SearchCardsScreen
-import com.example.androidproject.ui.study.StudyCardsScreen
+import com.example.androidproject.AddCardScreen
+import com.example.androidproject.ShowCardScreen
+import com.example.androidproject.HomeScreen
+import com.example.androidproject.SearchCardsScreen
+import com.example.androidproject.StudyCardsScreen
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
+@Serializable
+object HomeDestination
+
+@Serializable
+object AddCardDestination
+
+@Serializable
+object SearchCardDestination
+
+@Serializable
+object StudyCardDestination
+
+@Serializable
+object ShowCardDestination
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,16 +59,24 @@ fun Navigator(
     navController: NavHostController,
     flashCardDao: FlashCardDao
 ) {
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val canNavigateBack = navController.previousBackStackEntry != null
     var message by remember { mutableStateOf("") }
     val changeMessage: (String) -> Unit = { message = it }
 
-    // Navigation lambdas
-    val navigateToAddCard = { navController.navigate("add_card") }
-    val navigateToStudyCards = { navController.navigate("study_cards") }
-    val navigateToSearchCards = { navController.navigate("search_cards") }
-
     // --- DB-backed flashcards state ---
     var flashCards by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
+
+    // The card currently selected from SearchCardsScreen
+    var selectedItem by remember { mutableStateOf<FlashCard?>(null) }
+
+    // This will both REMEMBER the card and NAVIGATE
+    val navigationSelectedItem: (FlashCard) -> Unit = { card ->
+        selectedItem = card
+        navController.navigate(ShowCardDestination)
+    }
+
     val scope = rememberCoroutineScope()
 
     // Load all cards once when Navigator is first shown
@@ -77,7 +100,10 @@ fun Navigator(
         }
     }
 
-    var selectedItem by remember { mutableStateOf<FlashCard?>(null) }
+    // TYPE-SAFE navigation lambdas ✅
+    val navigateToAddCard = { navController.navigate(AddCardDestination) }
+    val navigateToStudyCards = { navController.navigate(StudyCardDestination) }
+    val navigateToSearchCards = { navController.navigate(SearchCardDestination) }
 
     Scaffold(
         topBar = {
@@ -88,25 +114,21 @@ fun Navigator(
                 ),
                 title = {
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text(
-                            text = "Teaching Mobile 26"
-                        )
+                        Text(text = "Teaching Mobile 26")
                     }
                 },
                 navigationIcon = {
-                    val currentRoute =
-                        navController.currentBackStackEntryAsState().value?.destination?.route
-                    if (currentRoute != "home") {
+                    if (canNavigateBack) {
                         Button(
                             modifier = Modifier.semantics { contentDescription = "navigateBack" },
-                            onClick = {
-                                navController.navigateUp()
-                            }) {
+                            onClick = { navController.navigateUp() }
+                        ) {
                             Text("Back")
                         }
                     }
                 }
             )
+
         },
         bottomBar = {
             BottomAppBar(
@@ -128,9 +150,9 @@ fun Navigator(
                 .padding(innerPadding)
                 .fillMaxWidth(),
             navController = navController,
-            startDestination = "home"
+            startDestination = HomeDestination
         ) {
-            composable("home") {
+            composable<HomeDestination> {
                 HomeScreen(
                     changeMessage = changeMessage,
                     navigateToAddCard = navigateToAddCard,
@@ -138,24 +160,36 @@ fun Navigator(
                     navigateToSearchCards = navigateToSearchCards
                 )
             }
-            composable("add_card") {
+            composable<AddCardDestination> {
                 AddCardScreen(
                     changeMessage = changeMessage,
                     onSaveCard = onSaveCard
                 )
             }
-            composable("study_cards") {
+            composable<StudyCardDestination> {
                 StudyCardsScreen(
                     flashCards = flashCards,
                     changeMessage = changeMessage
                 )
             }
-            composable("search_cards") {
+            composable<SearchCardDestination> {
                 SearchCardsScreen(
                     flashCards = flashCards,
-                    selectedItem = selectedItem,
-                    onSelectItem = { card -> selectedItem = card },
+                    navigationSelectedItem = navigationSelectedItem,
                     changeMessage = changeMessage
+                )
+            }
+            composable<ShowCardDestination> {
+                ShowCardScreen(
+                    flashCard = selectedItem,
+                    onDelete = { card ->
+                        scope.launch {
+                            flashCardDao.delete(card)
+                            flashCards = flashCardDao.getAll()
+                            changeMessage("Card deleted.")
+                            navController.navigateUp()
+                        }
+                    }
                 )
             }
         }

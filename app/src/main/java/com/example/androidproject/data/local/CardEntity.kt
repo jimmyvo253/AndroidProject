@@ -35,5 +35,5 @@ interface FlashCardDao {
     suspend fun insertAll(vararg flashCard: FlashCard)
 
     @Delete
-    fun delete(flashCard: FlashCard)
+    suspend fun delete(flashCard: FlashCard)
 }
