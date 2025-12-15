@@ -1,4 +1,4 @@
-package com.example.androidproject.ui.add
+package com.example.androidproject
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.example.androidproject.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

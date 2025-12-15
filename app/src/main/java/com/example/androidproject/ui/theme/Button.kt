@@ -1,4 +1,4 @@
-package com.example.androidproject.ui.button
+package com.example.androidproject.ui.theme
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size

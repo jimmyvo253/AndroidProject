@@ -1,5 +1,6 @@
 package com.example.androidproject
 
+import Navigator
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -7,7 +8,6 @@ import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
-import com.example.androidproject.navigation.Navigator
 import com.example.androidproject.ui.theme.AndroidProjectTheme
 import org.junit.Assert.assertEquals
 import org.junit.Rule
