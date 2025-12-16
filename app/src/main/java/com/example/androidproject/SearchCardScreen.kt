@@ -1,4 +1,4 @@
-package com.example.androidproject.ui.search
+package com.example.androidproject
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,26 +24,23 @@ import com.example.androidproject.data.local.FlashCard
 @Composable
 fun FlashCardList(
     flashCards: List<FlashCard>,
-    selectedItem: (FlashCard) -> Unit
+    navigationSelectedItem: (FlashCard) -> Unit,   // 👈 rename + meaning changed
 ) {
     LazyColumn(
         modifier = Modifier.padding(16.dp)
     ) {
         items(
             items = flashCards,
-            key = { flashCard ->
-                flashCard.uid
-            }
+            key = { flashCard -> flashCard.uid }
         ) { flashCard ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(width = 1.dp, color = Color.LightGray)
+                    .border(1.dp, Color.Blue)
                     .padding(6.dp)
-                    .clickable(onClick = {
-                        selectedItem(flashCard)
+                    .clickable {
+                        navigationSelectedItem(flashCard)   // 👈 when you click a row
                     }
-                    )
             ) {
                 Column(modifier = Modifier.padding(6.dp))
                 { Text(flashCard.enCard.toString()) }
@@ -56,28 +52,20 @@ fun FlashCardList(
     }
 }
 
-
 @Composable
 fun SearchCardsScreen(
     flashCards: List<FlashCard>,
-    selectedItem: FlashCard?,
-    onSelectItem: (FlashCard) -> Unit,
+    navigationSelectedItem: (FlashCard) -> Unit,
     changeMessage: (String) -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        changeMessage("This is the search screen.")
-    }
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Spacer(
-            modifier = Modifier.size(16.dp)
-        )
+        Spacer(modifier = Modifier.size(16.dp))
         FlashCardList(
             flashCards = flashCards,
-            selectedItem = onSelectItem,
+            navigationSelectedItem = navigationSelectedItem,
         )
     }
 }

@@ -17,6 +17,7 @@ fun HomeScreen(
     navigateToAddCard: () -> Unit,
     navigateToStudyCards: () -> Unit,
     navigateToSearchCards: () -> Unit,
+    navigateToLogin: () -> Unit,
     changeMessage: (String) -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -31,17 +32,27 @@ fun HomeScreen(
         Button(modifier = Modifier.semantics{contentDescription="navigateToStudyCards"},
             onClick = {
                 navigateToStudyCards()
-            })
-        { Text("Study Cards", modifier = Modifier.semantics{contentDescription="StudyCards"},) }
+            }) {
+            Text("Study Cards", modifier = Modifier.semantics{contentDescription="StudyCards"},) }
         Button(modifier = Modifier.semantics{contentDescription="navigateToAddCard"},
             onClick = {
                 navigateToAddCard()
             }) {
             Text("Add Card", modifier = Modifier.semantics{contentDescription="AddCard"},)
         }
-        Button(modifier = Modifier.semantics{contentDescription="navigateToSearchCards"},onClick = {
-            navigateToSearchCards()
-        }) { Text("Search Cards", modifier = Modifier.semantics{contentDescription="SearchCards"},) }
+        Button(modifier = Modifier.semantics{contentDescription="navigateToSearchCards"},
+            onClick = {
+                navigateToSearchCards()
+        }) {
+            Text("Search Cards", modifier = Modifier.semantics{contentDescription="SearchCards"},)
+        }
+        Button(
+            modifier = Modifier.semantics { contentDescription = "navigateToLogin" },
+            onClick = { navigateToLogin() }
+        ) {
+            Text("Log in")
+        }
+
 
     }
 }

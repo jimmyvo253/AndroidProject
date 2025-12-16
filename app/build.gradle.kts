@@ -90,6 +90,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.0-alpha08")
     implementation(libs.androidx.benchmark.traceprocessor.jvm) // Or a later version
 
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():

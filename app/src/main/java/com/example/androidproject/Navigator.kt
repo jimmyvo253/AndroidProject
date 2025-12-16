@@ -1,3 +1,4 @@
+
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -27,13 +28,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.androidproject.AddCardScreen
+import com.example.androidproject.HomeScreen
+import com.example.androidproject.LoginScreen
+import com.example.androidproject.SearchCardsScreen
+import com.example.androidproject.ShowCardScreen
+import com.example.androidproject.StudyCardsScreen
 import com.example.androidproject.data.local.FlashCard
 import com.example.androidproject.data.local.FlashCardDao
-import com.example.androidproject.AddCardScreen
-import com.example.androidproject.ShowCardScreen
-import com.example.androidproject.HomeScreen
-import com.example.androidproject.SearchCardsScreen
-import com.example.androidproject.StudyCardsScreen
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -52,6 +54,10 @@ object StudyCardDestination
 @Serializable
 object ShowCardDestination
 
+@Serializable
+object LoginDestination
+
+
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,9 +65,11 @@ fun Navigator(
     navController: NavHostController,
     flashCardDao: FlashCardDao
 ) {
+    //
+    var lesson by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
+    // --- Navigation lambdas ---
+    val navigateToLogin = { navController.navigate(LoginDestination) }
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val canNavigateBack = navController.previousBackStackEntry != null
     var message by remember { mutableStateOf("") }
     val changeMessage: (String) -> Unit = { message = it }
 
@@ -105,6 +113,8 @@ fun Navigator(
     val navigateToStudyCards = { navController.navigate(StudyCardDestination) }
     val navigateToSearchCards = { navController.navigate(SearchCardDestination) }
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val canNavigateBack = navBackStackEntry != null && navController.previousBackStackEntry != null
     Scaffold(
         topBar = {
             TopAppBar(
@@ -157,7 +167,8 @@ fun Navigator(
                     changeMessage = changeMessage,
                     navigateToAddCard = navigateToAddCard,
                     navigateToStudyCards = navigateToStudyCards,
-                    navigateToSearchCards = navigateToSearchCards
+                    navigateToSearchCards = navigateToSearchCards,
+                    navigateToLogin = navigateToLogin
                 )
             }
             composable<AddCardDestination> {
@@ -167,8 +178,12 @@ fun Navigator(
                 )
             }
             composable<StudyCardDestination> {
+                LaunchedEffect(Unit) {
+                    lesson = flashCardDao.getLesson(3)
+                    changeMessage("New lesson generated!")
+                }
                 StudyCardsScreen(
-                    flashCards = flashCards,
+                    lesson = lesson,
                     changeMessage = changeMessage
                 )
             }
@@ -191,6 +206,9 @@ fun Navigator(
                         }
                     }
                 )
+            }
+            composable<LoginDestination> {
+                LoginScreen(changeMessage = changeMessage)
             }
         }
     }

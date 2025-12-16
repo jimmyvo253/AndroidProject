@@ -31,6 +31,9 @@ interface FlashCardDao {
             "vietnamese_card LIKE :vietnamese LIMIT 1")
     suspend fun findByCards(english: String, vietnamese: String): FlashCard
 
+    @Query("SELECT * FROM FlashCards ORDER BY RANDOM() LIMIT :size")
+    suspend fun getLesson(size: Int): List<FlashCard>
+
     @Insert
     suspend fun insertAll(vararg flashCard: FlashCard)
 
