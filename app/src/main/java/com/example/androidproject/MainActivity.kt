@@ -1,22 +1,21 @@
 package com.example.androidproject
 
 import Navigator
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
 import com.example.androidproject.data.local.MenuDatabase
+import com.example.androidproject.network.NetworkService
 import com.example.androidproject.ui.theme.AndroidProjectTheme
-import android.content.Context
-import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.androidproject.data.local.FlashCardDatabase
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.jvm.java
-import com.example.androidproject.network.NetworkService
+import java.util.concurrent.TimeUnit
 
 //The Preferences DataStore implementation uses the DataStore and Preferences classes to persist key-value pairs to disk.
 //Use the property delegate created by preferencesDataStore to create an instance of DataStore<Preferences>.
@@ -45,8 +44,23 @@ class MainActivity : ComponentActivity() {
                 val appContext = applicationContext
                 // Pass DAO into Navigator
 
-                val db = FlashCardDatabase.getDatabase(appContext)
+                val db = MenuDatabase.getDatabase(appContext)
                 val flashCardDao = db.flashCardDao()
+
+                // network
+                // Create a single OkHttpClient instance
+                val sharedOkHttpClient = OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS) // Set connection timeout
+                    .readTimeout(30, TimeUnit.SECONDS)    // Set read timeout
+                    .build()
+                // 2. Create the first Retrofit instance, using the shared OkHttpClient
+                //.client(sharedOkHttpClient) // Pass the shared client
+
+                // Retrofit requires a valid HttpUrl: The baseUrl() method of Retrofit.Builder expects an okhttp3.HttpUrl object.
+                // This object represents a well-formed URL and requires a scheme (like "http" or "https"),
+                // a host, and optionally a port and path. It cannot be null or an empty string.
+                // You can use a placeholder or dummy URL, such as http://localhost/ or http://example.com/,
+                // during the initial setup. This satisfies Retrofit's requirement for a valid base URL.
 
                 val retrofit: Retrofit = Retrofit.Builder()
                     .baseUrl("https://egsbwqh7kildllpkijk6nt4soq0wlgpe.lambda-url.ap-southeast-1.on.aws/")

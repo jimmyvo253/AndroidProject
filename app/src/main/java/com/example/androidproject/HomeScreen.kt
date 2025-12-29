@@ -2,7 +2,6 @@ package com.example.androidproject
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +14,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
-
 import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -67,7 +65,6 @@ fun HomeScreen(
         }
         Button(
             modifier = Modifier
-                .fillMaxWidth()
                 .semantics { contentDescription = "ExecuteLogout" }, onClick = {
                 scope.launch {
                     appContext.dataStore.edit { preferences ->
@@ -83,7 +80,5 @@ fun HomeScreen(
                 modifier = Modifier.semantics { contentDescription = "Logout" }
             )
         }
-
-
     }
 }

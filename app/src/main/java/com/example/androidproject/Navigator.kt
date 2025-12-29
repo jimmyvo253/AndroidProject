@@ -28,12 +28,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.toRoute
 import com.example.androidproject.AddCardScreen
 import com.example.androidproject.HomeScreen
 import com.example.androidproject.LoginScreen
 import com.example.androidproject.SearchCardsScreen
 import com.example.androidproject.ShowCardScreen
-import com.example.androidproject.StudyCardsScreen
+import com.example.androidproject.StudyCardScreen
+import com.example.androidproject.TokenScreen
 import com.example.androidproject.data.local.FlashCard
 import com.example.androidproject.data.local.FlashCardDao
 import com.example.androidproject.network.NetworkService
@@ -50,13 +52,19 @@ object AddCardDestination
 object SearchCardDestination
 
 @Serializable
-object StudyCardDestination
+data class StudyCardDestination(val email: String, val token: String)
 
 @Serializable
 object ShowCardDestination
 
 @Serializable
 object LoginDestination
+
+@Serializable
+data class EditCardRoute(val english: String, val vietnamese: String)
+
+@Serializable
+data class TokenDestination(val email: String)
 
 
 @SuppressLint("RememberReturnType")
@@ -67,10 +75,12 @@ fun Navigator(
     flashCardDao: FlashCardDao,
     networkService: NetworkService
 ) {
+    var coroutineScope = rememberCoroutineScope()
+    var email by remember { mutableStateOf("") }
+    var token by remember { mutableStateOf("") }
     //
     var lesson by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
     // --- Navigation lambdas ---
-    val navigateToLogin = { navController.navigate(LoginDestination) }
 
     var message by remember { mutableStateOf("") }
     val changeMessage: (String) -> Unit = { message = it }
@@ -111,9 +121,15 @@ fun Navigator(
     }
 
     // TYPE-SAFE navigation lambdas ✅
+    val navigateToToken = { navController.navigate(TokenDestination) }
+
     val navigateToAddCard = { navController.navigate(AddCardDestination) }
-    val navigateToStudyCards = { navController.navigate(StudyCardDestination) }
-    val navigateToSearchCards = { navController.navigate(SearchCardDestination) }
+
+    val navigateToSearchCard = { navController.navigate(SearchCardDestination) }
+
+    val navigateToLogin = { navController.navigate(LoginDestination) }
+    val navigateToStudy = { navController.navigate(StudyCardDestination(email, token)) }
+
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val canNavigateBack = navBackStackEntry != null && navController.previousBackStackEntry != null
@@ -168,8 +184,8 @@ fun Navigator(
                 HomeScreen(
                     changeMessage = changeMessage,
                     navigateToAddCard = navigateToAddCard,
-                    navigateToStudyCards = navigateToStudyCards,
-                    navigateToSearchCards = navigateToSearchCards,
+                    navigateToStudyCards = navigateToStudy,
+                    navigateToSearchCards = navigateToSearchCard,
                     navigateToLogin = navigateToLogin
                 )
             }
@@ -179,14 +195,16 @@ fun Navigator(
                     onSaveCard = onSaveCard
                 )
             }
-            composable<StudyCardDestination> {
-                LaunchedEffect(Unit) {
-                    lesson = flashCardDao.getLesson(3)
-                    changeMessage("New lesson generated!")
-                }
-                StudyCardsScreen(
-                    lesson = lesson,
-                    changeMessage = changeMessage
+            composable<StudyCardDestination> { backStackEntry ->
+                val route = backStackEntry.toRoute<StudyCardDestination>()
+
+                StudyCardScreen(
+                    changeMessage = changeMessage,
+                    flashCardDao = flashCardDao,
+                    networkService = networkService,
+                    email = route.email,
+                    token = route.token,
+                    coroutineScope = coroutineScope
                 )
             }
             composable<SearchCardDestination> {
@@ -201,7 +219,7 @@ fun Navigator(
                     flashCard = selectedItem,
                     onDelete = { card ->
                         scope.launch {
-                            flashCardDao.delete(card)
+                            flashCardDao.deleteFlashCard(english = card.enCard ?: "", vietnamese = card.vnCard ?: "")
                             flashCards = flashCardDao.getAll()
                             changeMessage("Card deleted.")
                             navController.navigateUp()
@@ -209,9 +227,27 @@ fun Navigator(
                     }
                 )
             }
+            composable<TokenDestination> {
+                TokenScreen(
+                    email = email,
+                    changeMessage = changeMessage,
+                    navigateToHome = { enteredToken ->
+                        navController.navigate(HomeDestination)
+                    }
+                )
+            }
             composable<LoginDestination> {
-                LoginScreen(changeMessage = changeMessage)
+                LoginScreen(
+                    changeMessage = changeMessage,
+                    networkService = networkService,
+                    navigateToToken = { enteredEmail ->
+                        email = enteredEmail // <--- Add this line to save the email immediately
+                        navController.navigate(TokenDestination(enteredEmail))
+                    }
+                )
             }
         }
     }
 }
+
+
