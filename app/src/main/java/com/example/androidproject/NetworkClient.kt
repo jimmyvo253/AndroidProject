@@ -1,5 +1,6 @@
 package com.example.androidproject
 
+import com.example.androidproject.network.NetworkService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

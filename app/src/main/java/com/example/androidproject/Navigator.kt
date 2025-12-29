@@ -36,6 +36,7 @@ import com.example.androidproject.ShowCardScreen
 import com.example.androidproject.StudyCardsScreen
 import com.example.androidproject.data.local.FlashCard
 import com.example.androidproject.data.local.FlashCardDao
+import com.example.androidproject.network.NetworkService
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -63,7 +64,8 @@ object LoginDestination
 @Composable
 fun Navigator(
     navController: NavHostController,
-    flashCardDao: FlashCardDao
+    flashCardDao: FlashCardDao,
+    networkService: NetworkService
 ) {
     //
     var lesson by remember { mutableStateOf<List<FlashCard>>(emptyList()) }

@@ -1,13 +1,17 @@
 package com.example.androidproject.data.local
 
+import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Dao
+import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
 
 @Entity(tableName = "FlashCards", indices = [Index(
     value = ["english_card", "vietnamese_card"],
@@ -39,4 +43,28 @@ interface FlashCardDao {
 
     @Delete
     suspend fun delete(flashCard: FlashCard)
+}
+
+@Database(entities = [FlashCard::class], version = 1)
+abstract class FlashCardDatabase : RoomDatabase() {
+    abstract fun flashCardDao(): FlashCardDao
+
+    companion object {
+        @Volatile // Ensures visibility to all threads
+        private var INSTANCE: FlashCardDatabase? = null
+
+        fun getDatabase(context: Context): FlashCardDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext, // Use application context to prevent memory leaks
+                    FlashCardDatabase::class.java,
+                    "FlashCardDatabase"
+                ).build()
+                INSTANCE = instance
+                // return instance
+                instance
+            }
+        }
+    }
+
 }

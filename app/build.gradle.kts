@@ -85,6 +85,9 @@ dependencies {
     implementation(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.room.ktx)
+
+
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0") // Or the latest version
     implementation("androidx.navigation:navigation-compose:2.8.0-alpha08")
@@ -92,6 +95,12 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // datastore
+    // Preferences DataStore (SharedPreferences like APIs)
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
+    // Alternatively - without an Android dependency.
+    implementation("androidx.datastore:datastore-preferences-core:1.2.0")
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
