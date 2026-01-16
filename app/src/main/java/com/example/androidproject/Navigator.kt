@@ -185,8 +185,8 @@ fun Navigator(
                 HomeScreen(
                     changeMessage = changeMessage,
                     navigateToAddCard = navigateToAddCard,
-                    navigateToStudyCards = navigateToStudyCards,
-                    navigateToSearchCards = navigateToSearchCards,
+                    navigateToStudyCards = navigateToStudy,
+                    navigateToSearchCards = navigateToSearchCard,
                     navigateToLogin = navigateToLogin
                 )
             }
@@ -227,9 +227,27 @@ fun Navigator(
                     }
                 )
             }
+            composable<TokenDestination> {
+                TokenScreen(
+                    email = email,
+                    changeMessage = changeMessage,
+                    navigateToHome = { enteredToken ->
+                        navController.navigate(HomeDestination)
+                    }
+                )
+            }
             composable<LoginDestination> {
-                LoginScreen(changeMessage = changeMessage)
+                LoginScreen(
+                    changeMessage = changeMessage,
+                    networkService = networkService,
+                    navigateToToken = { enteredEmail ->
+                        email = enteredEmail // <--- Add this line to save the email immediately
+                        navController.navigate(TokenDestination(enteredEmail))
+                    }
+                )
             }
         }
     }
 }
+
+
