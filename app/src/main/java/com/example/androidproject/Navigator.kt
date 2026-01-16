@@ -194,8 +194,7 @@ fun Navigator(
             }
             composable<SearchCardDestination> {
                 SearchCardsScreen(
-                    flashCards = flashCards,
-                    navigationSelectedItem = navigationSelectedItem,
+                    navigateToList = navigateToList,
                     changeMessage = changeMessage
                 )
             }
