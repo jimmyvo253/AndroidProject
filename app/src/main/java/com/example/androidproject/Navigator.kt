@@ -58,6 +58,9 @@ object ShowCardDestination
 @Serializable
 object LoginDestination
 
+@Serializable
+object ListCardDestination
+
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalMaterial3Api::class)

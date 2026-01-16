@@ -67,7 +67,6 @@ fun HomeScreen(
         }
         Button(
             modifier = Modifier
-                .fillMaxWidth()
                 .semantics { contentDescription = "ExecuteLogout" }, onClick = {
                 scope.launch {
                     appContext.dataStore.edit { preferences ->

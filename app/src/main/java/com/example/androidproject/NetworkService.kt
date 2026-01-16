@@ -10,7 +10,7 @@ interface NetworkService {
 
     @POST(".")
     suspend fun generateToken(
-        @Url url: ("vhttps://egsbwqh7kildllpkijk6nt4soq0wlgpe.lambda-url.ap-southeast-1.on.aws/")
+        @Url url: String = "https://egsbwqh7kildllpkijk6nt4soq0wlgpe.lambda-url.ap-southeast-1.on.aws/",
         @Body body: UserCredential
     ): UserToken
 }

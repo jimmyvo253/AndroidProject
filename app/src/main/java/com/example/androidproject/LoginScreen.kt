@@ -58,7 +58,6 @@ fun LoginScreen(
 
         Button(
             modifier = Modifier
-                .fillMaxWidth()
                 .semantics { contentDescription = "Enter" },
             onClick = {
                 scope.launch {
