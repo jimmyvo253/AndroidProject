@@ -77,7 +77,7 @@ fun Navigator(
 
     var message by remember { mutableStateOf("") }
     val changeMessage: (String) -> Unit = { message = it }
-
+    val navigateToList = {navController.navigate(ListCardDestination)}
     // --- DB-backed flashcards state ---
     var flashCards by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
 

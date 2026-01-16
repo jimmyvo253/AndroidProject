@@ -64,7 +64,7 @@ fun LoginScreen(
                     try {
                         val result = withContext(Dispatchers.IO) {
                             NetworkClient.service.generateToken(
-                                email = UserCredential(email)
+                                body = UserCredential(email)
                             )
                         }
                         token = result.token
