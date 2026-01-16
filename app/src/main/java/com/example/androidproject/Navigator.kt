@@ -34,7 +34,7 @@ import com.example.androidproject.LoginScreen
 import com.example.androidproject.SearchCardsScreen
 import com.example.androidproject.ShowCardScreen
 import com.example.androidproject.StudyCardScreen
-import com.example.androidproject.StudyCardsScreen
+import com.example.androidproject.TokenScreen
 import com.example.androidproject.data.local.FlashCard
 import com.example.androidproject.data.local.FlashCardDao
 import com.example.androidproject.network.NetworkService
@@ -64,6 +64,9 @@ data class EditCardRoute(val english: String, val vietnamese: String)
 
 @Serializable
 data class TokenDestination(val email: String)
+
+@Serializable
+object ListCardDestination
 
 
 @SuppressLint("RememberReturnType")
