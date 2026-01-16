@@ -1,71 +1,106 @@
 package com.example.androidproject
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.example.androidproject.data.local.FlashCard
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FlashCardList(
-    flashCards: List<FlashCard>,
-    navigationSelectedItem: (FlashCard) -> Unit,   // 👈 rename + meaning changed
-) {
-    LazyColumn(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        items(
-            items = flashCards,
-            key = { flashCard -> flashCard.uid }
-        ) { flashCard ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, Color.Blue)
-                    .padding(6.dp)
-                    .clickable {
-                        navigationSelectedItem(flashCard)   // 👈 when you click a row
-                    }
-            ) {
-                Column(modifier = Modifier.padding(6.dp))
-                { Text(flashCard.enCard.toString()) }
-                Column(modifier = Modifier.padding(6.dp)) { Text(" = ") }
-                Column(modifier = Modifier.padding(6.dp))
-                { Text(flashCard.vnCard.toString()) }
-            }
-        }
-    }
-}
 
 @Composable
 fun SearchCardsScreen(
-    flashCards: List<FlashCard>,
-    navigationSelectedItem: (FlashCard) -> Unit,
+    navigateToList: () -> Unit,
     changeMessage: (String) -> Unit
 ) {
+    LaunchedEffect(Unit) { changeMessage("Search Screen") }
+    var enText by remember { mutableStateOf("") }
+    var vnText by remember { mutableStateOf("") }
+    var englishChecked by remember { mutableStateOf(false) }
+    var vietnameseChecked by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.size(16.dp))
-        FlashCardList(
-            flashCards = flashCards,
-            navigationSelectedItem = navigationSelectedItem,
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Search Bar
+            // Search TextField
+            Checkbox(
+                checked = englishChecked,
+                onCheckedChange = {englishChecked = it},
+                modifier = Modifier.semantics {contentDescription ="EnglishCheckbox"}
+            )
+            OutlinedTextField(
+                value = vnText,
+                onValueChange = { vnText = it },
+                modifier = Modifier.weight(1f).semantics{contentDescription = "english"},
+                placeholder = { Text("English") },
+                singleLine = true
+            )
+
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Search Bar
+            // Search TextField
+            Checkbox(
+                checked = vietnameseChecked,
+                onCheckedChange = {vietnameseChecked = it},
+                modifier = Modifier.semantics {contentDescription ="vietnameseCheckbox"}
+            )
+            OutlinedTextField(
+                value = vnText,
+                onValueChange = { vnText = it },
+                modifier = Modifier.weight(1f).semantics{contentDescription = "vietnamese"},
+                placeholder = { Text("Tiếng Việt") },
+                singleLine = true
+            )
+
+        }
+
+//        Button(
+//            modifier = Modifier
+//                .semantics{
+//
+//            },
+//
+//        )
+
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//
+//            Spacer(modifier = Modifier.width(8.dp))
+//            OutlinedTextField(
+//                value = searchQuery,
+//                onValueChange = { searchQuery = it },
+//                modifier = Modifier.fillMaxWidth(),
+//                placeholder = { Text("Search") },
+//                singleLine = true
+//            )
     }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
 }

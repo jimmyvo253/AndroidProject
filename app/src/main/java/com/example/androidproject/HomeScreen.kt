@@ -54,7 +54,7 @@ fun HomeScreen(
         Button(modifier = Modifier.semantics{contentDescription="navigateToSearchCards"},
             onClick = {
                 navigateToSearchCards()
-        }) {
+            }) {
             Text("Search Cards", modifier = Modifier.semantics{contentDescription="SearchCards"},)
         }
         Button(

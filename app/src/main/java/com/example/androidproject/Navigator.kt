@@ -28,14 +28,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.toRoute
 import com.example.androidproject.AddCardScreen
 import com.example.androidproject.HomeScreen
 import com.example.androidproject.LoginScreen
 import com.example.androidproject.SearchCardsScreen
 import com.example.androidproject.ShowCardScreen
 import com.example.androidproject.StudyCardScreen
-import com.example.androidproject.TokenScreen
+import com.example.androidproject.StudyCardsScreen
 import com.example.androidproject.data.local.FlashCard
 import com.example.androidproject.data.local.FlashCardDao
 import com.example.androidproject.network.NetworkService
@@ -81,10 +80,11 @@ fun Navigator(
     //
     var lesson by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
     // --- Navigation lambdas ---
+    val navigateToLogin = { navController.navigate(LoginDestination) }
 
     var message by remember { mutableStateOf("") }
     val changeMessage: (String) -> Unit = { message = it }
-
+    val navigateToList = {navController.navigate(ListCardDestination)}
     // --- DB-backed flashcards state ---
     var flashCards by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
 
@@ -121,8 +121,6 @@ fun Navigator(
     }
 
     // TYPE-SAFE navigation lambdas ✅
-    val navigateToToken = { navController.navigate(TokenDestination) }
-
     val navigateToAddCard = { navController.navigate(AddCardDestination) }
 
     val navigateToSearchCard = { navController.navigate(SearchCardDestination) }
@@ -209,8 +207,7 @@ fun Navigator(
             }
             composable<SearchCardDestination> {
                 SearchCardsScreen(
-                    flashCards = flashCards,
-                    navigationSelectedItem = navigationSelectedItem,
+                    navigateToList = navigateToList,
                     changeMessage = changeMessage
                 )
             }
