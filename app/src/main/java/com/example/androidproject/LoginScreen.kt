@@ -124,7 +124,7 @@ fun LoginScreen(
                 scope.launch {
                     try {
                         val response = networkService.generateToken(
-                            body = UserCredential(email)
+                            email = UserCredential(email)
                         )
 
                         if (response.code == 200) {

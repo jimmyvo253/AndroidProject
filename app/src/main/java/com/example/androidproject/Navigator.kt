@@ -66,6 +66,9 @@ data class EditCardRoute(val english: String, val vietnamese: String)
 @Serializable
 data class TokenDestination(val email: String)
 
+@Serializable
+object ListCardDestination
+
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalMaterial3Api::class)
