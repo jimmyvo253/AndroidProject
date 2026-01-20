@@ -1,4 +1,5 @@
 
+//import com.example.androidproject.ShowCardScreen
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -13,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,10 +31,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.example.androidproject.AddCardScreen
+import com.example.androidproject.FlashCardList
 import com.example.androidproject.HomeScreen
 import com.example.androidproject.LoginScreen
 import com.example.androidproject.SearchCardsScreen
-import com.example.androidproject.ShowCardScreen
 import com.example.androidproject.StudyCardScreen
 import com.example.androidproject.TokenScreen
 import com.example.androidproject.data.local.FlashCard
@@ -81,47 +82,64 @@ fun Navigator(
     var coroutineScope = rememberCoroutineScope()
     var email by remember { mutableStateOf("") }
     var token by remember { mutableStateOf("") }
-    //
-    var lesson by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
     // --- Navigation lambdas ---
 
     var message by remember { mutableStateOf("") }
     val changeMessage: (String) -> Unit = { message = it }
-    val navigateToList = {navController.navigate(ListCardDestination)}
-    // --- DB-backed flashcards state ---
-    var flashCards by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
 
-    // The card currently selected from SearchCardsScreen
-    var selectedItem by remember { mutableStateOf<FlashCard?>(null) }
+    // 1. Observe the database in real-time
+    // Whenever the DB updates, 'flashCards' will automatically change
+    val flashCards by flashCardDao.getAllFlow().collectAsState(initial = emptyList())
 
-    // This will both REMEMBER the card and NAVIGATE
-    val navigationSelectedItem: (FlashCard) -> Unit = { card ->
-        selectedItem = card
-        navController.navigate(ShowCardDestination)
-    }
+    var searchResults by remember { mutableStateOf<List<FlashCard>?>(null) }
+
+    val displayList = searchResults ?: flashCards
 
     val scope = rememberCoroutineScope()
 
     // Load all cards once when Navigator is first shown
-    LaunchedEffect(Unit) {
-        flashCards = flashCardDao.getAll()
-    }
+//    LaunchedEffect(Unit) {
+//        flashCards = flashCardDao.getAll()
+//    }
 
     // Callback to save new card
     val onSaveCard: (String, String) -> Unit = { en, vn ->
-        scope.launch {
-            flashCardDao.insertAll(
-                FlashCard(
-                    uid = 0,
-                    enCard = en,
-                    vnCard = vn
-                )
-            )
-            // Reload list after insert
-            flashCards = flashCardDao.getAll()
+        coroutineScope.launch {
+            val existing = flashCardDao.findByCards(en, vn)
+            if (existing != null) {
+                changeMessage("Card already exists!")
+                return@launch
+            }
+            flashCardDao.insertAll(FlashCard(uid = 0, enCard = en, vnCard = vn, audioFile = null))
+            // NO NEED to reload flashCards manually. Flow handles it.
             changeMessage("Card saved!")
         }
     }
+
+    val onSearchCards: (String, String, Boolean, Boolean) -> Unit =
+        { en, vn, enExact, vnExact ->
+            scope.launch {
+                // Prepare the search strings based on the checkboxes
+                // If NOT checked, add % for "contains" search
+                val searchEn = if (enExact) en else "%$en%"
+                val searchVn = if (vnExact) vn else "%$vn%"
+
+                val result = when {
+                    // If user typed in both fields
+                    en.isNotEmpty() && vn.isNotEmpty() -> flashCardDao.searchBoth(searchEn, searchVn)
+                    // If user typed only English
+                    en.isNotEmpty() -> flashCardDao.searchEnglish(searchEn)
+                    // If user typed only Vietnamese
+                    vn.isNotEmpty() -> flashCardDao.searchVietnamese(searchVn)
+                    // If both empty, reset to show all
+                    else -> null
+                }
+
+                searchResults = result
+                changeMessage(if (result == null) "Showing all" else "${result.size} results found")
+            }
+        }
+
 
     // TYPE-SAFE navigation lambdas ✅
     val navigateToToken = { navController.navigate(TokenDestination) }
@@ -212,20 +230,27 @@ fun Navigator(
             }
             composable<SearchCardDestination> {
                 SearchCardsScreen(
-                    navigateToList = navigateToList,
-                    changeMessage = changeMessage
+                    // Pass searchResults if the list should show specific search hits
+                    // or just navigate to ListCardDestination
+                    navigateToList = { navController.navigate(ListCardDestination) },
+                    changeMessage = changeMessage,
+                    onSearchCards = onSearchCards
                 )
             }
-            composable<ShowCardDestination> {
-                ShowCardScreen(
-                    flashCard = selectedItem,
+            composable<ListCardDestination> {
+                FlashCardList(
+                    // Decide here: do you want to show ALL cards or SEARCH results?
+                    // Usually, ListCardDestination shows the whole DB:
+                    flashCards = displayList,
                     onDelete = { card ->
-                        scope.launch {
-                            flashCardDao.deleteFlashCard(english = card.enCard ?: "", vietnamese = card.vnCard ?: "")
-                            flashCards = flashCardDao.getAll()
+                        coroutineScope.launch {
+                            flashCardDao.deleteFlashCard(card.enCard ?: "", card.vnCard ?: "")
                             changeMessage("Card deleted.")
-                            navController.navigateUp()
+                            // NO NEED to manually reload.
                         }
+                    },
+                    onEdit = { card ->
+                        navController.navigate(EditCardRoute(card.enCard ?: "", card.vnCard ?: ""))
                     }
                 )
             }
@@ -234,10 +259,16 @@ fun Navigator(
                     email = email,
                     changeMessage = changeMessage,
                     navigateToHome = { enteredToken ->
+
+                        // 🔥 THIS IS THE MISSING LINE
+                        token = enteredToken
+
+                        changeMessage("Token saved")
                         navController.navigate(HomeDestination)
                     }
                 )
             }
+
             composable<LoginDestination> {
                 LoginScreen(
                     changeMessage = changeMessage,
@@ -247,6 +278,25 @@ fun Navigator(
                         navController.navigate(TokenDestination(enteredEmail))
                     }
                 )
+            }
+
+            composable<EditCardRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<EditCardRoute>()
+
+                // Find the current card in your list or database
+                val cardToEdit = flashCards.find { it.enCard == route.english && it.vnCard == route.vietnamese }
+
+                if (cardToEdit != null) {
+                    EditCardScreen(
+                        flashCard = cardToEdit,
+                        email = email,
+                        token = token,
+                        networkService = networkService,
+                        flashCardDao = flashCardDao,
+                        changeMessage = changeMessage,
+                        onBack = { navController.navigateUp() }
+                    )
+                }
             }
         }
     }

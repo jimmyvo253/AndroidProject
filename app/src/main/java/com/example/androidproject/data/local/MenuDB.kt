@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [FlashCard::class], version = 1)
+@Database(entities = [FlashCard::class], version = 2)
 abstract class MenuDatabase : RoomDatabase() {
     abstract fun flashCardDao(): FlashCardDao
 
@@ -19,7 +19,9 @@ abstract class MenuDatabase : RoomDatabase() {
                     context.applicationContext, // Use application context to prevent memory leaks
                     MenuDatabase::class.java,
                     "MenuDatabase"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration(false)
+                    .build()
                 INSTANCE = instance
                 // return instance
                 instance

@@ -25,66 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.example.androidproject.network.NetworkService
 import kotlinx.coroutines.launch
 
-
-//@Composable
-//fun LoginScreen(
-//    changeMessage: (String) -> Unit
-//) {
-//
-//    var email by remember { mutableStateOf("") }
-//    var token by remember { mutableStateOf("") }
-//    val scope = rememberCoroutineScope()
-//
-//    Column(
-//        modifier = Modifier.padding(16.dp),
-//        verticalArrangement = Arrangement.spacedBy(12.dp)
-//    ) {
-//        OutlinedTextField(
-//            value = token,
-//            onValueChange = {},
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .semantics { contentDescription = "tokenTextField" },
-//            label = { Text("token") },
-//            readOnly = true
-//        )
-//
-//        OutlinedTextField(
-//            value = email,
-//            onValueChange = { email = it },
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .semantics { contentDescription = "emailTextField" },
-//            label = { Text("email") }
-//        )
-//
-//        Button(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .semantics { contentDescription = "Enter" },
-//            onClick = {
-//                scope.launch {
-//                    try {
-//                        val result = withContext(Dispatchers.IO) {
-//                            NetworkClient.service.generateToken(
-//                                email = UserCredential(email)
-//                            )
-//                        }
-//                        token = result.token
-//                        changeMessage("The token has been received successfully.")
-//                        Log.d("LOGIN", "token=$result")
-//                    } catch (e: Exception) {
-//                        changeMessage("There was an error in the token request.")
-//                        Log.d("LOGIN", "Error: $e")
-//                    }
-//                }
-//            }
-//        ) {
-//            Text("Enter")
-//        }
-//    }
-//}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(

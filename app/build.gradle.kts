@@ -102,6 +102,7 @@ dependencies {
     // Alternatively - without an Android dependency.
     implementation("androidx.datastore:datastore-preferences-core:1.2.0")
     implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.ui)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

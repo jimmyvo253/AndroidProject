@@ -2,7 +2,7 @@ package com.example.androidproject
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,29 +20,46 @@ import com.example.androidproject.data.local.FlashCard
 @Composable
 fun FlashCardList(
     flashCards: List<FlashCard>,
-    navigationSelectedItem: (FlashCard) -> Unit,   // 👈 rename + meaning changed
+    onEdit: (FlashCard) -> Unit,
+    onDelete: (FlashCard) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.padding(16.dp)
-    ) {
+    LazyColumn(modifier = Modifier.padding(16.dp)) {
         items(
             items = flashCards,
-            key = { flashCard -> flashCard.uid }
+            key = { it.uid }
         ) { flashCard ->
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, Color.Blue)
-                    .padding(6.dp)
-                    .clickable {
-                        navigationSelectedItem(flashCard)   // 👈 when you click a row
-                    }
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(modifier = Modifier.padding(6.dp))
-                { Text(flashCard.enCard.toString()) }
-                Column(modifier = Modifier.padding(6.dp)) { Text(" = ") }
-                Column(modifier = Modifier.padding(6.dp))
-                { Text(flashCard.vnCard.toString()) }
+
+                // --- Card text ---
+                Row {
+                    Text(flashCard.enCard ?: "")
+                    Text(" = ")
+                    Text(flashCard.vnCard ?: "")
+                }
+
+                // --- Actions ---
+                Row {
+                    Text(
+                        text = "Edit",
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .clickable { onEdit(flashCard) },
+                        color = Color.Blue
+                    )
+
+                    Text(
+                        text = "Delete",
+                        modifier = Modifier.clickable { onDelete(flashCard) },
+                        color = Color.Red
+                    )
+                }
             }
         }
     }

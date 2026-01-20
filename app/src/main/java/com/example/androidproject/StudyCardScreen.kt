@@ -38,61 +38,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.security.MessageDigest
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun StudyCardsScreen(
-//    lesson: List<FlashCard>,
-//    changeMessage: (String) -> Unit
-//){
-//
-//    if (lesson.isEmpty()) {
-//        Column(
-//            modifier = Modifier.fillMaxSize(),
-//            verticalArrangement = Arrangement.Center,
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            Text("No flashcards available.")
-//        }
-//        return
-//    }
-//    var index by remember { mutableStateOf(0) }
-//    var showVietnamese by remember { mutableStateOf(false) }
-//
-//    val current = lesson[index]
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(24.dp),
-//        verticalArrangement = Arrangement.spacedBy(20.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        val en = current.enCard ?: ""
-//        val vn = current.vnCard ?: ""
-//
-//        Text(
-//            text = if (showVietnamese) vn else en,
-//            modifier = Modifier.clickable {
-//                showVietnamese = !showVietnamese
-//            }
-//        )
-//
-//        // Show Next button only when Vietnamese is shown
-//
-//        if (showVietnamese && vn.isNotBlank()) {
-//            Button(onClick = {
-//                index = (index + 1) % lesson.size
-//                showVietnamese = false
-//            }) {
-//                Text("Next")
-//            }
-//        }
-//    }
-//
-//}
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudyCardScreen(
