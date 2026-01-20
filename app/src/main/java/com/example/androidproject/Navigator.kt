@@ -84,7 +84,6 @@ fun Navigator(
     //
     var lesson by remember { mutableStateOf<List<FlashCard>>(emptyList()) }
     // --- Navigation lambdas ---
-    val navigateToLogin = { navController.navigate(LoginDestination) }
 
     var message by remember { mutableStateOf("") }
     val changeMessage: (String) -> Unit = { message = it }
