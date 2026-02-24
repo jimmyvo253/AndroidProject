@@ -32,7 +32,7 @@ A modern, high-performance Android application designed for bilingual vocabulary
 ### Steps
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/android-flashcard-project.git
+   git clone https://github.com/jimmyvo253/AndroidProject.git
    ```
 2. **Open in Android Studio:**
    - Select `File > Open` and navigate to the project folder.
